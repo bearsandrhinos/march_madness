@@ -1,9 +1,17 @@
-view: reg_season_detailed_results {
-  sql_table_name: march_madness.reg_season_detailed_results ;;
+view: season_details_2017 {
+
+# Or, you could make this view a derived table, like this:
+   derived_table: {
+      sql: SELECT
+         * FROM march_madness.reg_season_detailed_results
+            WHERE Season = 2017
+       ;;
+      persist_for: "360 hours"
+  }
 
   dimension: game_id {
     primary_key: yes
-    sql: CONCAT(cast(${TABLE}.daynum as string), "Y", cast(${TABLE}.Season as string), "W", cast(${TABLE}.wteamid as string), "L", cast(${TABLE}.lteamid as string));;
+   sql: CONCAT(cast(${TABLE}.daynum as string), "Y", cast(${TABLE}.Season as string), "W", cast(${TABLE}.wteamid as string), "L", cast(${TABLE}.lteamid as string));;
   }
 
   dimension: day_num {
@@ -214,4 +222,5 @@ view: reg_season_detailed_results {
     type: count
     drill_fields: []
   }
+
 }

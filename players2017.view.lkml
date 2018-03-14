@@ -14,6 +14,23 @@ view: players2017 {
     sql: ${TABLE}.PlayerName ;;
   }
 
+  dimension: last_name {
+    type: string
+    sql: replace(REGEXP_EXTRACT(${player_name}, r'(.*)_'), "_", " ") ;;
+  }
+
+  dimension: first_name {
+    type: string
+    sql: case when REGEXP_EXTRACT(REGEXP_EXTRACT(PlayerName, r'_(.*)'), r'_(.*)') is null
+                      then REGEXP_EXTRACT(PlayerName, r'_(.*)')
+                      else REGEXP_EXTRACT(REGEXP_EXTRACT(PlayerName, r'_(.*)'), r'_(.*)') end ;;
+  }
+
+  dimension: full_name {
+    type: string
+    sql: concat(${first_name}, ' ', ${last_name}) ;;
+  }
+
   dimension: season {
     description: "Year the tournament is played in"
     type: number

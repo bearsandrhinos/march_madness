@@ -8,6 +8,16 @@ view: teams {
     sql: ${TABLE}.TeamID ;;
   }
 
+ # dimension: opp_team_id {
+#    type: number
+#    sql: ${TABLE}.TeamID ;;
+ # }
+
+  #dimension: opp_team_name {
+   # type: string
+    #sql: ${TABLE}.TeamName ;;
+#  }
+
   dimension: first_d1_season {
     description: "The first year the corresponding team was in D1 basketball"
     type: number
