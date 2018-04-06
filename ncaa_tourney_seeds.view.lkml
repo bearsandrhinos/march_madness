@@ -13,6 +13,24 @@ view: ncaa_tourney_seeds {
     sql: ${TABLE}.Seed ;;
   }
 
+  dimension: region_id {
+    type: string
+    sql: rtrim(${seed}, "0123456789ab") ;;
+  }
+
+  dimension: region {
+    type: string
+    sql: case when ${region_id} = 'W' then "East"
+              when ${region_id} = 'X' then "West"
+              when ${region_id} = 'Y' then "Midwest"
+              else "South" end;;
+  }
+
+  dimension: tourney_seed {
+    type: number
+    sql: rtrim(ltrim(${seed}, "WXYZ"),"ab") ;;
+  }
+
   dimension: team_id {
     description: "The id number of the team"
     type: number

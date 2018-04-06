@@ -1,226 +1,192 @@
-view: season_details_2017 {
+explore: season_details_2017_1 {
+
+}
+###This view is just to get the donut multiples.  Maybe use for other things.
+
+view: season_details_2017_1 {
 
 # Or, you could make this view a derived table, like this:
-   derived_table: {
-      sql: SELECT
-         * FROM march_madness.reg_season_detailed_results
-            WHERE Season = 2017
-       ;;
-      persist_for: "360 hours"
-  }
+  derived_table: {
+    sql: SELECT
+      eventteamid  AS team_id,
+      play_by_play2017.EventType  AS event_type,
+      COUNT(*) AS event_count
+        FROM march_madness.play_by_play2017  AS play_by_play2017
+        GROUP BY 1,2;;
+}
 
-  dimension: game_id {
-    primary_key: yes
-   sql: CONCAT(cast(${TABLE}.daynum as string), "Y", cast(${TABLE}.Season as string), "W", cast(${TABLE}.wteamid as string), "L", cast(${TABLE}.lteamid as string));;
-  }
-
-  dimension: day_num {
-    description: "The actual day number of the game"
+  dimension: team_id {
     type: number
-    sql: ${TABLE}.DayNum ;;
+    sql: ${TABLE}.team_id ;;
   }
 
-  dimension: last {
-    description: "The number of assists for the losing team"
-    type: number
-    sql: ${TABLE}.LAst ;;
-  }
-
-  dimension: lblk {
-    description: "The number of blocks for the losing team"
-    type: number
-    sql: ${TABLE}.LBlk ;;
-  }
-
-  dimension: ldr {
-    description: "The number of defensive rebounds for the losing team"
-    type: number
-    sql: ${TABLE}.LDR ;;
-  }
-
-  dimension: lfga {
-    description: "The number of field goal attempts by the losing team"
-    type: number
-    sql: ${TABLE}.LFGA ;;
-  }
-
-  dimension: lfga3 {
-    description: "The number of three point field goal attempts by the losing team"
-    type: number
-    sql: ${TABLE}.LFGA3 ;;
-  }
-
-  dimension: lfgm {
-    description: "The number of field goals made by the losing team"
-    type: number
-    sql: ${TABLE}.LFGM ;;
-  }
-
-  dimension: lfgm3 {
-    description: "The number of three point field goals made by the losing team"
-    type: number
-    sql: ${TABLE}.LFGM3 ;;
-  }
-
-  dimension: lfta {
-    description: "The number of free throw attempts by the losing team"
-    type: number
-    sql: ${TABLE}.LFTA ;;
-  }
-
-  dimension: lftm {
-    description: "The number of free throws made by the losing team"
-    type: number
-    sql: ${TABLE}.LFTM ;;
-  }
-
-  dimension: lor {
-    description: "The number of offensive rebounds by the losing team"
-    type: number
-    sql: ${TABLE}.LOR ;;
-  }
-
-  dimension: lpf {
-    description: "The number of personal fouls committed by the losing team"
-    type: number
-    sql: ${TABLE}.LPF ;;
-  }
-
-  dimension: lscore {
-    description: "The amount of points scored by the losing team"
-    type: number
-    sql: ${TABLE}.LScore ;;
-  }
-
-  dimension: lstl {
-    description: "The number of steals by the losing team"
-    type: number
-    sql: ${TABLE}.LStl ;;
-  }
-
-  dimension: lteam_id {
-    description: "The team id for the losing team"
-    type: number
-    sql: ${TABLE}.LTeamID ;;
-  }
-
-  dimension: lto {
-    description: "The number of turnovers committed by the losing team"
-    type: number
-    sql: ${TABLE}.LTO ;;
-  }
-
-  dimension: num_ot {
-    description: "The number of overtime periods in the game"
-    type: number
-    sql: ${TABLE}.NumOT ;;
-  }
-
-  dimension: season {
-    description: "The year the tournament was played in"
-    type: number
-    sql: ${TABLE}.Season ;;
-  }
-
-  dimension: wast {
-    description: "The number of assists by the winning team"
-    type: number
-    sql: ${TABLE}.WAst ;;
-  }
-
-  dimension: wblk {
-    description: "The number of blocks by the winning team"
-    type: number
-    sql: ${TABLE}.WBlk ;;
-  }
-
-  dimension: wdr {
-    description: "The number of defensive rebounds by the winning team"
-    type: number
-    sql: ${TABLE}.WDR ;;
-  }
-
-  dimension: wfga {
-    description: "The number of field goal attempts by the winning team"
-    type: number
-    sql: ${TABLE}.WFGA ;;
-  }
-
-  dimension: wfga3 {
-    description: "The number of three point field goal attempts by the winning team"
-    type: number
-    sql: ${TABLE}.WFGA3 ;;
-  }
-
-  dimension: wfgm {
-    description: "The number of field goals made by the winning team"
-    type: number
-    sql: ${TABLE}.WFGM ;;
-  }
-
-  dimension: wfgm3 {
-    description: "The number of three point field goals made by the winning team"
-    type: number
-    sql: ${TABLE}.WFGM3 ;;
-  }
-
-  dimension: wfta {
-    description: "The number of free throw attempts by the winning team"
-    type: number
-    sql: ${TABLE}.WFTA ;;
-  }
-
-  dimension: wftm {
-    description: "The number of free throws made by the winning team"
-    type: number
-    sql: ${TABLE}.WFTM ;;
-  }
-
-  dimension: wloc {
-    description: "The location of the winning team, home or away"
+  dimension: event_type {
     type: string
-    sql: ${TABLE}.WLoc ;;
+    sql: ${TABLE}.event_type ;;
   }
 
-  dimension: wor {
-    description: "The number of offensive rebounds by the winning team"
+  dimension: event_count {
     type: number
-    sql: ${TABLE}.WOR ;;
+    sql: ${TABLE}.event_count ;;
   }
 
-  dimension: wpf {
-    description: "The number of personal fouls committed by the winning team"
+  dimension: assist {
+    description: "Assist"
     type: number
-    sql: ${TABLE}.WPF ;;
+    sql: case when ${event_type} = "assist" then ${event_count} end ;;
   }
 
-  dimension: wscore {
-    description: "The amount of points scored by the winning team"
+  dimension: block {
     type: number
-    sql: ${TABLE}.WScore ;;
+    sql: case when ${event_type} = "block" then ${event_count} end ;;
   }
 
-  dimension: wstl {
-    description: "The number of steals by the winning team"
+  dimension: steal {
     type: number
-    sql: ${TABLE}.WStl ;;
+    sql: case when ${event_type} = "steal" then ${event_count} end ;;
   }
 
-  dimension: wteam_id {
-    description: "The team id for the winning team"
+  dimension: turnover {
     type: number
-    sql: ${TABLE}.WTeamID ;;
+    sql: case when ${event_type} = "turnover" ${event_count} end ;;
   }
 
-  dimension: wto {
-    description: "The number of turnovers committed by the winning team"
+  dimension: timeout {
     type: number
-    sql: ${TABLE}.WTO ;;
+    sql: case when ${event_type} = "timeout" ${event_count} end ;;
   }
+
+  dimension: foul_pers {
+    label: "Personal Foul"
+    type: number
+    sql: case when ${event_type} = "foul_pers" ${event_count} end ;;
+  }
+
+  dimension: foul_tech {
+    label: "Technical Foul"
+    type: number
+    sql: case when ${event_type} = "foul_tech" ${event_count} end ;;
+  }
+
+  dimension: reb_off {
+    label: "Offensive Rebound"
+    type: number
+    sql: case when ${event_type} = "reb_off" ${event_count} end ;;
+  }
+
+  dimension: reb_def {
+    label: "Defensive Rebound"
+    type: number
+    sql: case when ${event_type} = "reb_def" ${event_count} end ;;
+  }
+
+  dimension: reb_dead {
+    label: "Dead ball rebound"
+    type: number
+    sql: case when ${event_type} = "reb_dead" ${event_count} end ;;
+  }
+
+  dimension: tot_reb {
+    type: number
+    sql: ${reb_off} + ${reb_def} + ${reb_dead} ;;
+  }
+
+  dimension: sub_in {
+    label: "Subbed in"
+    type: number
+    sql: case when ${event_type} = "sub_in" ${event_count} end ;;
+  }
+
+  dimension: sub_out {
+    label: "Subbed out"
+    type: number
+    sql: case when ${event_type} = "sub_out" ${event_count} end ;;
+  }
+
+  dimension: made1_free {
+    label: "Made Free Throw"
+    type: number
+    sql: case when ${event_type} = "made1_free" ${event_count} end ;;
+  }
+
+  dimension: miss1_free {
+    label: "Miss Free Throw"
+    type: number
+    sql: case when ${event_type} = "miss1_free" ${event_count} end ;;
+  }
+
+  dimension: free_attempt {
+    type: number
+    sql: ${made1_free} + ${miss1_free} ;;
+  }
+
+  dimension: FTP {
+    type: number
+    sql: ${made1_free}/nullif(${free_attempt}, 0) ;;
+  }
+
+  dimension: made2_dunk {
+    label: "Made Dunk"
+    type: number
+    sql: case when ${event_type} = "made2_dunk" ${event_count} end ;;
+  }
+
+  dimension: miss2_dunk {
+    label: "Missed Dunk"
+    type: number
+    sql: case when ${event_type} = "miss2_dunk" ${event_count} end ;;
+  }
+
+  dimension: miss2_tip {
+    label: "Missed Tip"
+    type: number
+    sql: case when ${event_type} = "miss2_tip" ${event_count} end ;;
+  }
+
+  dimension: made2_tip {
+    label: "Made Tip"
+    type: number
+    sql: case when ${event_type} = "made2_tip" ${event_count} end ;;
+  }
+
+  dimension: miss2_lay {
+    label: "Missed Layup"
+    type: number
+    sql: case when ${event_type} = "miss2_lay" ${event_count} end ;;
+  }
+
+  dimension: made2_lay {
+    label: "Made Layup"
+    type: number
+    sql: case when ${event_type} = "made2_lay" ${event_count} end ;;
+  }
+
+  dimension: miss2_jump {
+    label: "Missed Jump Shot"
+    type: number
+    sql: case when ${event_type} = "miss2_jump" ${event_count} end ;;
+  }
+
+  dimension: made2_jump {
+    label: "Made Jump"
+    type: number
+    sql: case when ${event_type} = "made2_jump" ${event_count} end ;;
+  }
+
+
 
   measure: count {
     type: count
     drill_fields: []
   }
 
+  measure: free_made {
+    type: sum
+    sql: ${made1_free} ;;
+  }
+
+  measure: free_miss {
+    type: sum
+    sql: ${miss1_free} ;;
+  }
 }

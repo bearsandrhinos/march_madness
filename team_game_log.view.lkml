@@ -155,13 +155,37 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
       sql: ${score} - ${opponent_score} ;;
     }
 
+  dimension: score_diff_2 {
+    description: "The score differential"
+    type: number
+    sql: ${score} - ${opponent_score} ;;
+    html: <a href="{{link}}">{{team_game_log.final_score._value}}</a> ;;
+    drill_fields: [game_details* ]
+  }
+
+  set: game_details {
+    fields: [game_date, final_score, field_goal_makes, field_goal_makes, field_goal_percentage]
+  }
+
+    dimension: final_score {
+      type: string
+      sql: concat(cast(${score} as string), "-", cast(${opponent_score} as string)) ;;
+    }
+
     dimension: win {
       description: "If the team won the game"
-      type: yesno
-      sql: ${score_diff} > 0 ;;
+      type: number
+      sql: if(${score_diff} > 0, 1, 0) ;;
+    }
+
+    dimension: lose {
+      description: "If the team lost the game"
+      type: number
+      sql: if(${score_diff} < 0,1, 0) ;;
     }
 
   dimension: ast {
+    #hidden: yes
     description: "The number of assists by the team"
     label: "ASTs"
     type: number
@@ -169,6 +193,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: blk {
+    #hidden: yes
     description: "The number of blocks by the team"
     label: "BLKs"
     type: number
@@ -176,6 +201,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: defr {
+    #hidden: yes
     description: "The number of defensive rebounds by the team"
     label: "Def. Reb."
     type: number
@@ -183,6 +209,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: fga {
+    #hidden: yes
     description: "The number of field goal attempts by the team"
     label: "FGA"
     type: number
@@ -190,6 +217,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: fga3 {
+    #hidden: yes
     description: "The number of three point field goal attempts by the team"
     label: "3PFGA "
     type: number
@@ -197,6 +225,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: fgm {
+    #hidden: yes
     description: "The number of field goals made by the team"
     label: "FGM"
     type: number
@@ -204,14 +233,16 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: FGP {
+    #hidden: yes
     label: "FGP"
     description: "Field goal percentage"
     type:number
-    sql: ${fgm}/${fga} ;;
+    sql: ${fgm}/nullif(${fga}, 0) ;;
     value_format_name: percent_1
   }
 
   dimension: fgm3 {
+    #hidden: yes
     description: "The number of three point field goals made by the team"
     label: "3PFGM"
     type: number
@@ -219,14 +250,16 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: 3PFGP {
+    #hidden: yes
     label: "3PFGP"
     description: "3 point field goal percentage"
     type: number
-    sql: ${fgm3}/${fga3} ;;
+    sql: ${fgm3}/nullif(${fga3}, 0) ;;
     value_format_name: percent_1
   }
 
   dimension: fta {
+    #hidden: yes
     description: "The number of free throw attempts by the team"
     label: "FTA"
     type: number
@@ -234,6 +267,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: ftm {
+    #hidden: yes
     description: "The number of free throws made by the team"
     label: "FTM"
     type: number
@@ -241,10 +275,11 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: FTP {
+   # hidden: yes
     label: "FTP"
     description: "Free throw percentage"
     type: number
-    sql: ${ftm}/${fta} ;;
+    sql: ${ftm}/nullif(${fta}, 0) ;;
     value_format_name: percent_1
   }
 
@@ -256,6 +291,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: offr {
+   # hidden: yes
     description: "The number of offensive rebounds by the team"
     label: "Off. Reb."
     type: number
@@ -263,12 +299,14 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: total_reb {
+    #hidden: yes
     description: "Total rebounds"
     type: number
     sql: ${offr} + ${defr} ;;
   }
 
   dimension: pf {
+    #hidden: yes
     description: "The number of personal fouls committed by the team"
     label: "Personal Fouls"
     type: number
@@ -277,6 +315,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
 
 
   dimension: stl {
+   # hidden: yes
     description: "The number of steals by the team"
     label: "STLs"
     type: number
@@ -285,6 +324,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
 
 
   dimension: turnover {
+    #hidden: yes
     description: "The number of turnovers committed by the team"
     label: "Turnovers"
     type: number
@@ -292,6 +332,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_ast {
+    #hidden: yes
     description: "The number of assists by the opposing team"
     label: "Opposing ASTs"
     type: number
@@ -299,6 +340,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_blk {
+    #hidden: yes
     description: "The number of blocks by the opposing team"
     label: "Opposing BLKs"
     type: number
@@ -306,6 +348,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_defr {
+   # hidden: yes
     description: "The number of defensive rebounds by the opposing team"
     label: "Opposing Def. Reb."
     type: number
@@ -313,6 +356,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_fga {
+    #hidden: yes
     description: "The number of field goal attempts by the opposing team"
     label: "Opposing FGA"
     type: number
@@ -320,6 +364,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_fga3 {
+   # hidden: yes
     description: "The number of three point field goal attempts by the opposing team"
     label: "Opposing 3PFGA "
     type: number
@@ -327,6 +372,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_fgm {
+   # hidden: yes
     description: "The number of field goals made by the opposing team"
     label: "Opposing FGM"
     type: number
@@ -334,6 +380,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_fgm3 {
+   # hidden: yes
     description: "The number of three point field goals made by the opposing team"
     label: "Opposing 3PFGM"
     type: number
@@ -341,22 +388,25 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_fgp {
+   # hidden: yes
     label: "Opposing FGP"
     description: "The opposing team field goal percentage"
     type: number
-    sql: ${opp_fgm}/${opp_fga} ;;
+    sql: ${opp_fgm}/nullif(${opp_fga}, 0) ;;
     value_format_name: percent_1
   }
 
   dimension: opp_3pfgp {
+   # hidden: yes
     label: "Opposing 3PFGP"
     description: "The opposing team three point field goal percentage"
     type: number
-    sql: ${opp_fgm3}/${opp_fga3} ;;
+    sql: ${opp_fgm3}/nullif(${opp_fga3}, 0) ;;
     value_format_name: percent_1
   }
 
   dimension: opp_fta {
+   # hidden: yes
     description: "The number of free throw attempts by the opposing team"
     label: "Opposing FTA"
     type: number
@@ -364,6 +414,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_ftm {
+   # hidden: yes
     description: "The number of free throws made by the opposing team"
     label: "Opposing FTM"
     type: number
@@ -371,15 +422,17 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_ftp {
+   # hidden: yes
     label: "Opposing FTP"
     description: "The opposing team free throw percentage"
     type: number
-    sql: ${opp_ftm}/${opp_fta} ;;
+    sql: ${opp_ftm}/nullif(${opp_fta}, 0) ;;
     value_format_name: percent_1
   }
 
 
   dimension: opp_offr {
+   # hidden: yes
     description: "The number of offensive rebounds by the opposing opposing team"
     label: "Opposing Off. Reb."
     type: number
@@ -387,6 +440,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_total_reb {
+    #hidden: yes
     description: "The total number of rebounds for the opposing team"
     label: "Opposing Total Reb"
     type: number
@@ -394,6 +448,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_pf {
+   # hidden: yes
     description: "The number of personal fouls committed by the opposing team"
     label: "Opposing Personal Fouls"
     type: number
@@ -402,6 +457,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
 
 
   dimension: opp_stl {
+   # hidden: yes
     description: "The number of steals by the opposing team"
     label: "Opposing STLs"
     type: number
@@ -410,6 +466,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
 
 
   dimension: opp_turnover {
+   # hidden: yes
     description: "The number of turnovers committed by the opposing team"
     label: "Opposing Turnovers"
     type: number
@@ -417,18 +474,20 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: city_id {
-    description: "City id"
+   # description: "City id"
     type: number
     sql: ${TABLE}.city_id ;;
   }
 
   dimension: points_from_2 {
+   # hidden: yes
     label: "Points from 2-pointers"
     type: number
     sql: 2*(${fgm} - ${fgm3}) ;;
   }
 
   dimension: points_from_3 {
+   # hidden: yes
     label: "Points from 3-pointers"
     type: number
     sql: 3*${fgm3} ;;
@@ -437,31 +496,72 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   ####I think these are wrong
   #0.5 * (FGA + 0.475 * FTA - ORB + TOV) + 0.5 * (Opp FGA + 0.475 * Opp FTA - Opp ORB + Opp TOV)
   dimension: possesions {
+   # hidden: yes
     label: "Number of possessions"
     type: number
     sql: 0.5*(${fga} + 0.475*${fta} - ${offr} +${turnover}) +
           0.5 * (${opp_fga} + 0.475*${opp_fta} - ${opp_offr} + ${opp_turnover});;
   }
+
+  ##Try this.
+ # Team Stats = (Team Field Goals + 0.4 * Team Free Throw Attempts –
+#1.07 * (Team Offensive Rebounds / (Team Offensive Rebounds + Opponent Defensive Rebounds))
+#* (Team Field Goal Attempts – Team Field Goals) + Team Turnovers)
+
+  dimension: primary_poss {
+    type: number
+    sql: (${fga} + 0.4 * ${fta} - 1.07*(${offr}/(${offr}+${opp_defr}))*(${fga}-${fgm})+${opp_turnover}) ;;
+    value_format_name: decimal_0
+  }
+
+  #Opponent Stats = (Opponent Field Goal Attempts + 0.4 * Opponent Free Throw Attempts – 1.07
+  #* (Opponent Offensive Rebounds / (Opponent Offensive Rebounds + Team Defensive Rebounds))
+  #* (Opponent Field Goal Attempts – Opponent Field Goals) + Opponent Turnovers)
+
+  dimension: opp_poss {
+    type: number
+    sql: (${opp_fga} + 0.4*${opp_fta}-1.07*(${opp_offr}/(${opp_offr}+${opp_defr}))*(${opp_fga}-${opp_fgm})+${turnover}) ;;
+    value_format_name: decimal_0
+  }
+
+
   #this too
   #100 x Pts / (0.5 * ((Tm FGA + 0.4 * Tm FTA - 1.07 * (Tm ORB / (Tm ORB + Opp DRB))
   #* (Tm FGA - Tm FG) + Tm TOV) + (Opp FGA + 0.4 * Opp FTA - 1.07 * (Opp ORB / (Opp ORB + Tm DRB))
   #* (Opp FGA - Opp FG) + Opp TOV)))
   dimension: offensive_rtg {
+   # hidden: yes
     label: "Offensive Rating"
     type: number
-    sql: 100*(${score}/${possesions});;
+    sql: 100*(${score}/${primary_poss});;
     value_format_name: decimal_1
   }
 
+
   dimension:defensive_rtg {
+   # hidden: yes
     label: "Defensive Rating"
     type: number
-    sql: 100*(${opponent_score}/${possesions}) ;;
+    sql: 100*(${opponent_score}/${primary_poss}) ;;
     value_format_name: decimal_1
   }
+
+  dimension: opp_off_rtg {
+    type: number
+    sql: 100*(${opponent_score}/${opp_poss}) ;;
+    value_format_name: decimal_1
+  }
+
+  dimension: opp_def_rtg {
+    type: number
+    sql: 100*(${score}/${opp_poss}) ;;
+    value_format_name: decimal_1
+  }
+
 
   #(FG + 0.5 * 3P) / FGA
   dimension: efg {
+   # hidden: yes
     label: "Effective Shooting %"
     type: number
     sql: (${fgm}+0.5*${fgm3})/${fga} ;;
@@ -469,6 +569,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_efg {
+   # hidden: yes
     label: "Opponent Effective Shooting %"
     type: number
     sql: (${opp_fgm}+0.5*${opp_fgm3})/${opp_fga} ;;
@@ -477,6 +578,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
 
   #PTS / (2 * (FGA + 0.475 * FTA)).
   dimension: true_sp {
+   # hidden: yes
     label: "True Shooting %"
     type: number
     sql: ${score}/(2*(${fga} + 0.475*${fta})) ;;
@@ -484,16 +586,28 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
   }
 
   dimension: opp_true_sp {
+   # hidden: yes
     label: "Opponent True Shooting %"
     type: number
     sql: ${opponent_score}/(2*(${opp_fga} + 0.475*${fta})) ;;
     value_format_name: percent_1
   }
 
+  dimension: pace {
+    type: number
+    sql: 40*((${primary_poss}+${opp_poss})/(80)) ;;
+  }
+
+
+
 
 measure: count {
   type: count
 }
+
+####################################################################################################
+###      This is the section where I am going to make measures of the dimensions
+####################################################################################################
 
 measure: team_score1 {
   type: max
@@ -505,7 +619,304 @@ measure: opp_score1 {
   sql: ${opponent_score} ;;
 }
 
+measure: avg_score_diff {
+  label: "Score Differential"
+  type: average
+  sql: ${score_diff} ;;
+}
 
+measure: win1 {
+  type: sum
+  sql: ${win} ;;
+}
+
+measure: win_record {
+  type: running_total
+  sql:${win1} ;;
+}
+
+measure: lose1 {
+  type: sum
+  sql: ${lose};;
+}
+
+measure: lose_record {
+  description: "Use only when looking at one team to get the losing record through out the season"
+  type: running_total
+  sql: ${lose1} ;;
+}
+
+measure: assists {
+  type: sum
+  sql: ${ast} ;;
+  drill_fields: [player_stats*]
+}
+
+
+measure: blocks {
+  type: sum
+  sql: ${blk} ;;
+}
+
+
+measure: defensive_rebounds {
+  type: sum
+  sql: ${defr} ;;
+}
+
+measure: offensive_rebounds {
+  type: sum
+  sql: ${offr} ;;
+}
+
+measure: total_rebounds {
+  type: sum
+  sql: ${total_reb} ;;
+}
+
+measure: field_goal_attempts {
+  type: sum
+  sql: ${fga} ;;
+}
+
+measure: field_goal_makes {
+  type: sum
+  sql: ${fgm} ;;
+}
+
+measure: field_goal_percentage {
+  type: average
+  sql: ${FGP} ;;
+  value_format_name: percent_1
+  drill_fields: [primary_team.team_name, game_date, fgm, fga]
+}
+
+measure: free_throw_attempts {
+  type: sum
+  sql: ${fta} ;;
+}
+
+measure: free_throw_makes {
+  type: sum
+  sql: ${ftm} ;;
+}
+
+measure: free_throw_percentage {
+  type: average
+  sql: ${FTP} ;;
+  value_format_name: percent_1
+  drill_fields: [primary_team.team_name,game_date, ftm, fta]
+}
+
+measure: 3_point_field_goal_attempts {
+  type: sum
+  sql: ${fga3} ;;
+}
+
+measure: 3_point_field_goal_makes {
+  type: sum
+  sql: ${fgm3} ;;
+}
+
+measure: 3_point_field_goal_percentage {
+  type: average
+  sql: ${3PFGP} ;;
+  value_format_name: percent_1
+  drill_fields: [primary_team.team_name, game_date, fgm3, fga3]
+}
+
+measure: steals {
+  type: sum
+  sql: ${stl} ;;
+}
+
+measure: personal_fouls {
+  type: sum
+  sql: ${pf} ;;
+}
+
+measure: turnovers {
+  type: sum
+  sql: ${turnover} ;;
+}
+
+  measure: opp_assists {
+    type: sum
+    sql: ${opp_ast} ;;
+    drill_fields: [player_stats*]
+  }
+
+
+  measure: opp_blocks {
+    type: sum
+    sql: ${opp_blk} ;;
+  }
+
+
+  measure: opp_defensive_rebounds {
+    type: sum
+    sql: ${opp_defr} ;;
+  }
+
+  measure: opp_offensive_rebounds {
+    type: sum
+    sql: ${opp_offr} ;;
+  }
+
+  measure: opp_total_rebounds {
+    type: sum
+    sql: ${opp_total_reb} ;;
+  }
+
+  measure: opp_field_goal_attempts {
+    type: sum
+    sql: ${opp_fga} ;;
+  }
+
+  measure: opp_field_goal_makes {
+    type: sum
+    sql: ${opp_fgm} ;;
+  }
+
+  measure: opp_field_goal_percentage {
+    type: average
+    sql: ${opp_fgp} ;;
+    value_format_name: percent_1
+    drill_fields: [opposing_team.team_name, game_date, opp_fgm, opp_fga]
+  }
+
+  measure: opp_free_throw_attempts {
+    type: sum
+    sql: ${opp_fta} ;;
+  }
+
+  measure: opp_free_throw_makes {
+    type: sum
+    sql: ${opp_ftm} ;;
+  }
+
+  measure: opp_free_throw_percentage {
+    type: average
+    sql: ${opp_ftp} ;;
+    value_format_name: percent_1
+    drill_fields: [opposing_team.team_name, game_date, opp_ftm, opp_fta]
+  }
+
+  measure: opp_3_point_field_goal_attempts {
+    type: sum
+    sql: ${opp_fga3} ;;
+  }
+
+  measure: opp_3_point_field_goal_makes {
+    type: sum
+    sql: ${opp_fgm3} ;;
+  }
+
+  measure: opp_3_point_field_goal_percentage {
+    type: average
+    sql: ${opp_3pfgp} ;;
+    value_format_name: percent_1
+    drill_fields: [opposing_team.team_name, game_date, opp_fgm3, opp_fga3]
+
+  }
+
+  measure: opp_steals {
+    type: sum
+    sql: ${opp_stl} ;;
+  }
+
+  measure: opp_personal_fouls {
+    type: sum
+    sql: ${opp_pf} ;;
+  }
+
+  measure: opp_turnovers {
+    type: sum
+    sql: ${opp_turnover} ;;
+  }
+
+  measure: pts_from_2 {
+    type: sum
+    sql: ${points_from_2} ;;
+  }
+
+  measure: pts_from_3 {
+    type: sum
+    sql: ${points_from_3} ;;
+  }
+
+  measure: game_possesions {
+    type: sum
+    sql: ${primary_poss} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: opp_possesion {
+    type: sum
+    sql: ${opp_poss} ;;
+    value_format_name: decimal_0
+  }
+
+  measure: offensive_rating {
+    type: average
+    sql: ${offensive_rtg} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: defensive_rating {
+    type: average
+    sql: ${defensive_rtg} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: opp_offensive_rating {
+    type: average
+    sql: ${opp_off_rtg} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: opp_defensive_rating {
+    type: average
+    sql: ${opp_def_rtg} ;;
+    value_format_name: decimal_1
+  }
+
+  measure: effective_shooting_percentage {
+    label: "Effective Shooting %"
+    type: average
+    sql: ${efg} ;;
+    value_format_name: percent_1
+    drill_fields: [primary_team.team_name, fgm, fga, fgm3, fga3]
+  }
+
+  measure: opp_effective_shooting_percentage {
+    label: "Opp Effective Shooting %"
+    type: average
+    sql: ${opp_efg} ;;
+    value_format_name: percent_1
+    drill_fields: [opposing_team.team_name, opp_fgm, opp_fga, opp_fgm3, opp_fga3]
+  }
+
+  measure: true_shooting_percentage {
+    label: "True Shooting %"
+    type: average
+    sql: ${true_sp} ;;
+    value_format_name: percent_1
+    drill_fields: [primary_team.team_name, fgm, fga, ftm, fta]
+  }
+
+  measure: opp_true_shooting_percentage {
+    label: "Opp True Shooting %"
+    type: average
+    sql: ${opp_true_sp} ;;
+    value_format_name: percent_1
+    drill_fields: [opposing_team.team_name, opp_fgm, opp_fga, opp_ftm, opp_fta]
+  }
+
+
+####################################################################################################
+###     This is the per game measures
+####################################################################################################
 measure: PPG {
   label: "PPG"
   description: "Points per game"
@@ -528,6 +939,7 @@ measure: APG {
   type: average
   sql: ${ast} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, assists ]
 }
 
 measure: allowed_APG {
@@ -536,6 +948,7 @@ measure: allowed_APG {
   type: average
   sql: ${opp_ast} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, opp_assists ]
 }
 
 measure: RPG {
@@ -544,6 +957,7 @@ measure: RPG {
   type: average
   sql: ${total_reb} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, total_rebounds ]
 }
 
 measure: allowed_RPG {
@@ -552,6 +966,7 @@ measure: allowed_RPG {
   type: average
   sql: ${opp_total_reb} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, opp_total_rebounds ]
 }
 
 measure: offensive_RPG {
@@ -592,6 +1007,7 @@ measure: STLPG {
   type: average
   sql: ${stl} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, steals ]
 }
 
 measure: allowed_STLPG {
@@ -600,6 +1016,7 @@ measure: allowed_STLPG {
   type: average
   sql: ${opp_stl} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, opp_steals ]
 }
 
 measure: BLKPG {
@@ -608,6 +1025,7 @@ measure: BLKPG {
   type: average
   sql: ${blk} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, blocks ]
 }
 
 measure: allowed_BLKPG {
@@ -616,6 +1034,7 @@ measure: allowed_BLKPG {
   type: average
   sql: ${opp_blk} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, opp_blocks ]
 }
 
 measure: TOPG {
@@ -624,6 +1043,7 @@ measure: TOPG {
   type: average
   sql: ${turnover} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, turnovers ]
 }
 
 measure: Forced_TOPG {
@@ -632,14 +1052,21 @@ measure: Forced_TOPG {
   type: average
   sql: ${opp_turnover} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, opp_turnovers ]
 }
 
 ###### Advanced metrics try
 
+measure: pace_metric {
+  type: average
+  sql: ${pace} ;;
+  value_format_name: decimal_0
+}
 
 
-
-
+set: player_stats {
+  fields: [teams1.team_name, players2017.full_name]
+}
 
 
 

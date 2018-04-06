@@ -34,7 +34,17 @@ view: teams {
     description: "This is a compact spelling of the college team"
     type: string
     sql: ${TABLE}.TeamName ;;
+    link: {
+      label: "Google"
+      url: "http://www.google.com/search?q={{ value }} college basketball"
+      icon_url: "http://google.com/favicon.ico"
+    }
   }
+
+  dimension: team_image {
+    sql: ${team_name} ;;
+    html: <img src="https://b.fssta.com/uploads/content/dam/fsdigital/fscom/global/dev/static_resources/cbk/teams/retina/606.vresize.80.80.medium.2.png"  />
+      ;; }
 
   measure: count {
     type: count

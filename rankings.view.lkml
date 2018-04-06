@@ -5,6 +5,7 @@ view: rankings {
     description: "This is the overall ranking of the team in the underlying system"
     type: number
     sql: ${TABLE}.OrdinalRank ;;
+    drill_fields: [primary_team.team_logo, primary_team.team_name]
   }
 
   dimension: ranking_day_num {
@@ -34,5 +35,10 @@ view: rankings {
   measure: count {
     type: count
     drill_fields: [system_name]
+  }
+
+  measure: ranking {
+    type: min
+    sql: ${ordinal_rank} ;;
   }
 }

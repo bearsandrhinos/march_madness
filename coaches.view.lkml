@@ -7,6 +7,23 @@ view: coaches {
     sql: ${TABLE}.CoachName ;;
   }
 
+  dimension: last_name {
+    type: string
+    sql: replace(REGEXP_EXTRACT(${coach_name}, r'(.*)_'), "_", " ") ;;
+  }
+
+  dimension: first_name {
+    type: string
+    sql: case when REGEXP_EXTRACT(REGEXP_EXTRACT(${coach_name}, r'_(.*)'), r'_(.*)') is null
+                      then REGEXP_EXTRACT(${coach_name}, r'_(.*)')
+                      else REGEXP_EXTRACT(REGEXP_EXTRACT(${coach_name}, r'_(.*)'), r'_(.*)') end ;;
+  }
+
+  dimension: full_name {
+    type: string
+    sql: upper(concat(${first_name}, ' ', ${last_name})) ;;
+    }
+
   dimension: first_day_num {
     description: "Day number of the season that was the coach's first day"
     type: number
