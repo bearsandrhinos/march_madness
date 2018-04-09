@@ -1,4 +1,4 @@
-explore: bracket {}
+
 
 view: bracket {
   sql_table_name: march_madness.bracket ;;
@@ -11,11 +11,21 @@ view: bracket {
   dimension: MWS {
     type: string
     sql: ${TABLE}.string_field_0 ;;
+    link: {
+      label: "Team Dashboard"
+      url: "/dashboards/97?Team%20Name={{value}}"
+      icon_url: "{{ teams_mws.team_logo._value}}"
+    }
   }
 
   dimension: SW {
     type: string
     sql: ${TABLE}.string_field_2 ;;
+    link: {
+      label: "Team Dashboard"
+      url: "/dashboards/97?Team%20Name={{value}}"
+      icon_url: "{{ teams_sw.team_logo._value}}"
+    }
   }
 
   dimension: seed {

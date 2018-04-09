@@ -38,6 +38,23 @@ persist_with: march_madness_default_datagroup
 #
 # }
 
+explore: bracket {
+  join: teams_mws {
+    from: teams1
+    fields: [teams_mws.team_name, teams_mws.team_logo]
+    type: left_outer
+    sql_on: ${bracket.MWS} = ${teams_mws.team_name} ;;
+    relationship: one_to_one
+  }
+
+  join: teams_sw {
+    from: teams1
+    fields: [teams_sw.team_name, teams_sw.team_logo]
+    type: left_outer
+    sql_on: ${bracket.SW} = ${teams_sw.team_name} ;;
+    relationship: one_to_one
+  }
+}
 
 
 explore: play_by_play2017 {

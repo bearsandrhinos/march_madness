@@ -109,6 +109,8 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
       type: time
       timeframes: [date, month, week, year]
       sql: cast(DATE_SUB(DATE "2017-04-03", INTERVAL (154-${day_num}) DAY) as TIMESTAMP) ;;
+
+
     }
 
     dimension: team_id {
@@ -121,6 +123,20 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
       description: "The opposing team id"
       type: string
       sql: ${TABLE}.opponent_id ;;
+    }
+
+    dimension: win_id {
+      hidden: yes
+      type: string
+      sql: case when ${win} = 1 then ${team_id}
+                else ${opponent_id} end;;
+    }
+
+    dimension: lose_id {
+      hidden: yes
+      type: string
+      sql: case when ${win} = 0 then ${team_id}
+                else ${opponent_id} end;;
     }
 
     dimension: score {
@@ -153,6 +169,11 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
       description: "The score differential"
       type: number
       sql: ${score} - ${opponent_score} ;;
+      link: {
+        label: "Game Dashboard"
+        url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+        icon_url: "{{primary_team.team_logo._value}}"
+        }
     }
 
   dimension: score_diff_2 {
@@ -161,6 +182,11 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
     sql: ${score} - ${opponent_score} ;;
     html: <a href="{{link}}">{{team_game_log.final_score._value}}</a> ;;
     drill_fields: [game_details* ]
+    link: {
+      label: "Game Dashboard"
+      url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+      icon_url: "{{primary_team.team_logo._value}}"
+    }
   }
 
   set: game_details {
@@ -623,6 +649,11 @@ measure: avg_score_diff {
   label: "Score Differential"
   type: average
   sql: ${score_diff} ;;
+  link: {
+    label: "Game Dashboard"
+    url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+    icon_url: "{{primary_team.team_logo._value}}"
+  }
 }
 
 measure: win1 {
@@ -650,12 +681,22 @@ measure: assists {
   type: sum
   sql: ${ast} ;;
   drill_fields: [player_stats*]
+  link: {
+    label: "Game Dashboard"
+    url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+    icon_url: "{{primary_team.team_logo._value}}"
+    }
 }
 
 
 measure: blocks {
   type: sum
   sql: ${blk} ;;
+  link: {
+    label: "Game Dashboard"
+    url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+    icon_url: "{{primary_team.team_logo._value}}"
+    }
 }
 
 
@@ -672,6 +713,11 @@ measure: offensive_rebounds {
 measure: total_rebounds {
   type: sum
   sql: ${total_reb} ;;
+  link: {
+    label: "Game Dashboard"
+    url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+    icon_url: "{{primary_team.team_logo._value}}"
+    }
 }
 
 measure: field_goal_attempts {
@@ -728,6 +774,11 @@ measure: 3_point_field_goal_percentage {
 measure: steals {
   type: sum
   sql: ${stl} ;;
+  link: {
+    label: "Game Dashboard"
+    url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+    icon_url: "{{primary_team.team_logo._value}}"
+    }
 }
 
 measure: personal_fouls {
@@ -738,18 +789,33 @@ measure: personal_fouls {
 measure: turnovers {
   type: sum
   sql: ${turnover} ;;
+  link: {
+    label: "Game Dashboard"
+    url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+    icon_url: "{{primary_team.team_logo._value}}"
+    }
 }
 
   measure: opp_assists {
     type: sum
     sql: ${opp_ast} ;;
     drill_fields: [player_stats*]
+    link: {
+      label: "Game Dashboard"
+      url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+      icon_url: "{{primary_team.team_logo._value}}"
+      }
   }
 
 
   measure: opp_blocks {
     type: sum
     sql: ${opp_blk} ;;
+    link: {
+      label: "Game Dashboard"
+      url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+      icon_url: "{{primary_team.team_logo._value}}"
+      }
   }
 
 
@@ -766,6 +832,11 @@ measure: turnovers {
   measure: opp_total_rebounds {
     type: sum
     sql: ${opp_total_reb} ;;
+    link: {
+      label: "Game Dashboard"
+      url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+      icon_url: "{{primary_team.team_logo._value}}"
+      }
   }
 
   measure: opp_field_goal_attempts {
@@ -823,6 +894,11 @@ measure: turnovers {
   measure: opp_steals {
     type: sum
     sql: ${opp_stl} ;;
+    link: {
+      label: "Game Dashboard"
+      url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+      icon_url: "{{primary_team.team_logo._value}}"
+      }
   }
 
   measure: opp_personal_fouls {
@@ -833,6 +909,11 @@ measure: turnovers {
   measure: opp_turnovers {
     type: sum
     sql: ${opp_turnover} ;;
+    link: {
+      label: "Game Dashboard"
+      url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+      icon_url: "{{primary_team.team_logo._value}}"
+      }
   }
 
   measure: pts_from_2 {
@@ -1061,6 +1142,11 @@ measure: pace_metric {
   type: average
   sql: ${pace} ;;
   value_format_name: decimal_0
+  link: {
+    label: "Game Dashboard"
+    url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
+    icon_url: "{{primary_team.team_logo._value}}"
+  }
 }
 
 

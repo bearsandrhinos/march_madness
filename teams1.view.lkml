@@ -24,6 +24,11 @@ view: teams1 {
   dimension: team_name {
     type: string
     sql: ${TABLE}.TeamName ;;
+    link: {
+      label: "Team Dashboard"
+      url: "/dashboards/97?Team%20Name={{value}}"
+      icon_url: "{{ team_logo._value}}"
+    }
   }
 
   dimension: team_logo {
