@@ -546,7 +546,7 @@ LEFT JOIN march_madness.game_cities  AS game_cities ON reg_season_detailed_resul
 
   dimension: opp_poss {
     type: number
-    sql: (${opp_fga} + 0.4*${opp_fta}-1.07*(${opp_offr}/(${opp_offr}+${opp_defr}))*(${opp_fga}-${opp_fgm})+${turnover}) ;;
+    sql: (${opp_fga} + 0.4*${opp_fta}-1.07*(${opp_offr}/(${opp_offr}+${defr}))*(${opp_fga}-${opp_fgm})+${turnover}) ;;
     value_format_name: decimal_0
   }
 
@@ -942,24 +942,92 @@ measure: turnovers {
     type: average
     sql: ${offensive_rtg} ;;
     value_format_name: decimal_1
+    html:
+    {% if value >= 120 %}
+    <p style="color: DARKGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 110 %}
+    <p style="color: SEAGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 105 %}
+    <p style="color: MEDIUMSEAGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 100 %}
+    <p style="color: PALEGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 95 %}
+    <p style="color: CORAL; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 90 %}
+    <p style="color: INDIANRED; font-size:100%">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black;  font-size:100%">{{ rendered_value }}</p>
+    {% endif %}
+    ;;
   }
 
   measure: defensive_rating {
     type: average
     sql: ${defensive_rtg} ;;
     value_format_name: decimal_1
+    html:
+    {% if value >= 110 %}
+    <p style="color: INDIANRED; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 105 %}
+    <p style="color: CORAL; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 100 %}
+    <p style="color: PALEGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 95 %}
+    <p style="color: MEDIUMSEAGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 90 %}
+    <p style="color: SEAGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 85 %}
+    <p style="color: DARKGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black;  font-size:100%">{{ rendered_value }}</p>
+    {% endif %}
+    ;;
   }
 
   measure: opp_offensive_rating {
     type: average
     sql: ${opp_off_rtg} ;;
     value_format_name: decimal_1
+    html:
+    {% if value >= 120 %}
+    <p style="color: DARKGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 110 %}
+    <p style="color: SEAGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 105 %}
+    <p style="color: MEDIUMSEAGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 100 %}
+    <p style="color: PALEGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 95 %}
+    <p style="color: CORAL; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 90 %}
+    <p style="color: INDIANRED; font-size:100%">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black;  font-size:100%">{{ rendered_value }}</p>
+    {% endif %}
+    ;;
   }
 
   measure: opp_defensive_rating {
     type: average
     sql: ${opp_def_rtg} ;;
     value_format_name: decimal_1
+    html:
+    {% if value >= 110 %}
+    <p style="color: INDIANRED; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 105 %}
+    <p style="color: CORAL; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 100 %}
+    <p style="color: PALEGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 95 %}
+    <p style="color: MEDIUMSEAGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 90 %}
+    <p style="color: SEAGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value >= 85 %}
+    <p style="color: DARKGREEN; font-size:100%">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black;  font-size:100%">{{ rendered_value }}</p>
+    {% endif %}
+    ;;
   }
 
   measure: effective_shooting_percentage {
@@ -1004,6 +1072,7 @@ measure: PPG {
   type: average
   sql: ${score} ;;
   value_format_name: decimal_1
+
 }
 
 measure: allowed_PPG {
@@ -1147,6 +1216,8 @@ measure: pace_metric {
     url: "/dashboards/101?Game%20ID={{team_game_log.game_id._value}}&Winning%20Team={{team_game_log.win_id._value}}&Losing%20Team={{team_game_log.lose_id._value}}"
     icon_url: "{{primary_team.team_logo._value}}"
   }
+  html: <a href="https://productday.dev.looker.com/explore/march_madness/team_game_log?fields=opposing_rankings.ordinal_rank,team_game_log.game_date,team_game_log.pace_metric,team_game_log.avg_score_diff&f[team_game_log.season]=2017&f[primary_rankings.system_name]=POM&f[opposing_rankings.system_name]=POM&f[team_game_log.day_num]=%3C134&f[primary_team.team_name]=UCLA&sorts=team_game_log.game_date+desc&limit=500&column_limit=50&query_timezone=America%2FLos_Angeles&vis=%7B%22stacking%22%3A%22%22%2C%22show_value_labels%22%3Afalse%2C%22label_density%22%3A25%2C%22legend_position%22%3A%22center%22%2C%22x_axis_gridlines%22%3Afalse%2C%22y_axis_gridlines%22%3Atrue%2C%22show_view_names%22%3Atrue%2C%22limit_displayed_rows%22%3Afalse%2C%22y_axis_combined%22%3Atrue%2C%22show_y_axis_labels%22%3Atrue%2C%22show_y_axis_ticks%22%3Atrue%2C%22y_axis_tick_density%22%3A%22default%22%2C%22y_axis_tick_density_custom%22%3A5%2C%22show_x_axis_label%22%3Atrue%2C%22show_x_axis_ticks%22%3Atrue%2C%22x_axis_scale%22%3A%22ordinal%22%2C%22y_axis_scale_mode%22%3A%22linear%22%2C%22x_axis_reversed%22%3Atrue%2C%22y_axis_reversed%22%3Afalse%2C%22ordering%22%3A%22none%22%2C%22show_null_labels%22%3Afalse%2C%22show_totals_labels%22%3Afalse%2C%22show_silhouette%22%3Afalse%2C%22totals_color%22%3A%22%23e61212%22%2C%22value_labels%22%3A%22legend%22%2C%22label_type%22%3A%22labPer%22%2C%22type%22%3A%22looker_column%22%2C%22hidden_fields%22%3A%5B%22opposing_rankings.ordinal_rank%22%2C%22team_game_log.avg_score_diff%22%5D%2C%22colors%22%3A%5B%22palette%3A+Looker+Classic%22%5D%2C%22series_colors%22%3A%7B%22team_game_log.pace_metric%22%3A%22%23F2A900%22%2C%22team_game_log.avg_score_diff%22%3A%22%233284BF%22%2C%22lose%22%3A%22%230d0c0c%22%2C%22win%22%3A%22%233284BF%22%7D%2C%22limit_displayed_rows_values%22%3A%7B%22show_hide%22%3A%22hide%22%2C%22first_last%22%3A%22first%22%2C%22num_rows%22%3A0%7D%2C%22x_axis_datetime_tick_count%22%3A0%2C%22series_types%22%3A%7B%22team_game_log.pace_metric%22%3A%22line%22%7D%2C%22show_dropoff%22%3Afalse%2C%22hide_legend%22%3Afalse%2C%22y_axes%22%3A%5B%7B%22label%22%3Anull%2C%22maxValue%22%3Anull%2C%22minValue%22%3Anull%2C%22orientation%22%3A%22left%22%2C%22showLabels%22%3Atrue%2C%22showValues%22%3Atrue%2C%22tickDensity%22%3A%22default%22%2C%22tickDensityCustom%22%3Anull%2C%22type%22%3A%22linear%22%2C%22unpinAxis%22%3Afalse%2C%22valueFormat%22%3Anull%2C%22series%22%3A%5B%7B%22id%22%3A%22lose%22%2C%22name%22%3A%22Lose%22%2C%22axisId%22%3A%22lose%22%7D%2C%7B%22id%22%3A%22win%22%2C%22name%22%3A%22Win%22%2C%22axisId%22%3A%22win%22%7D%5D%7D%2C%7B%22label%22%3A%22Pace%22%2C%22maxValue%22%3Anull%2C%22minValue%22%3A50%2C%22orientation%22%3A%22right%22%2C%22showLabels%22%3Atrue%2C%22showValues%22%3Atrue%2C%22tickDensity%22%3A%22default%22%2C%22tickDensityCustom%22%3Anull%2C%22type%22%3A%22linear%22%2C%22unpinAxis%22%3Afalse%2C%22valueFormat%22%3Anull%2C%22series%22%3A%5B%7B%22id%22%3A%22team_game_log.pace_metric%22%2C%22name%22%3A%22Pace%22%2C%22axisId%22%3A%22team_game_log.pace_metric%22%7D%5D%7D%5D%2C%22x_axis_label%22%3A%22Game+Date%22%2C%22series_labels%22%3A%7B%22team_game_log.pace_metric%22%3A%22Pace%22%7D%2C%22x_axis_datetime_label%22%3A%22%25d+%25b+%25y%22%7D&filter_config=%7B%22team_game_log.season%22%3A%5B%7B%22type%22%3A%22%3D%22%2C%22values%22%3A%5B%7B%22constant%22%3A%222017%22%7D%2C%7B%7D%5D%2C%22id%22%3A0%2C%22error%22%3Afalse%7D%5D%2C%22primary_rankings.system_name%22%3A%5B%7B%22type%22%3A%22%3D%22%2C%22values%22%3A%5B%7B%22constant%22%3A%22POM%22%7D%2C%7B%7D%5D%2C%22id%22%3A1%2C%22error%22%3Afalse%7D%5D%2C%22opposing_rankings.system_name%22%3A%5B%7B%22type%22%3A%22%3D%22%2C%22values%22%3A%5B%7B%22constant%22%3A%22POM%22%7D%2C%7B%7D%5D%2C%22id%22%3A2%2C%22error%22%3Afalse%7D%5D%2C%22team_game_log.day_num%22%3A%5B%7B%22type%22%3A%22%5Cu003c%22%2C%22values%22%3A%5B%7B%22constant%22%3A%22134%22%7D%2C%7B%7D%5D%2C%22id%22%3A3%2C%22error%22%3Afalse%7D%5D%2C%22primary_team.team_name%22%3A%5B%7B%22type%22%3A%22%3D%22%2C%22values%22%3A%5B%7B%22constant%22%3A%22UCLA%22%7D%2C%7B%7D%5D%2C%22id%22%3A2%2C%22error%22%3Afalse%7D%5D%7D&dynamic_fields=%5B%7B%22table_calculation%22%3A%22lose%22%2C%22label%22%3A%22Lose%22%2C%22expression%22%3A%22if%28%24%7Bteam_game_log.avg_score_diff%7D%3C0%2C+%24%7Bteam_game_log.avg_score_diff%7D%2C+null%29%22%2C%22value_format%22%3Anull%2C%22value_format_name%22%3Anull%2C%22_kind_hint%22%3A%22measure%22%2C%22_type_hint%22%3A%22number%22%7D%2C%7B%22table_calculation%22%3A%22win%22%2C%22label%22%3A%22Win%22%2C%22expression%22%3A%22if%28%24%7Bteam_game_log.avg_score_diff%7D%3E0%2C+%24%7Bteam_game_log.avg_score_diff%7D%2C+null%29%22%2C%22value_format%22%3Anull%2C%22value_format_name%22%3Anull%2C%22_kind_hint%22%3A%22measure%22%2C%22_type_hint%22%3A%22number%22%7D%5D&origin=share-expanded">Opponent Graph</a> ;;
+
 }
 
 

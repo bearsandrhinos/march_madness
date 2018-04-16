@@ -21,7 +21,7 @@ view: coaches {
 
   dimension: full_name {
     type: string
-    sql: upper(concat(${first_name}, ' ', ${last_name})) ;;
+    sql: upper(concat(${last_name}, ' ', ${first_name})) ;;
     }
 
   dimension: first_day_num {

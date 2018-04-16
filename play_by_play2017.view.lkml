@@ -228,6 +228,21 @@ view: play_by_play2017 {
     sql: ${made2_dunk} + ${made2_jump} + ${made2_lay} + ${made2_tip} + ${made3_jump} ;;
   }
 
+  dimension: assist_sec {
+    type: number
+    sql: case when ${assist} = 1 then ${elapsed_seconds} else 0 end ;;
+  }
+
+  dimension: field_goal_sec {
+    type: number
+    sql: case when ${field_goal_makes} = 1 then ${elapsed_seconds} else 0 end ;;
+  }
+
+  dimension: field_goals_from_assists {
+    type: number
+    sql: case when ${assist_sec} = ${field_goal_sec} then 1 else 0 end ;;
+  }
+
   dimension: field_goal_miss {
     type: number
     sql: ${miss2_dunk} + ${miss2_jump} + ${miss2_lay} + ${miss2_tip} + ${miss3_jump} ;;
@@ -274,6 +289,15 @@ view: play_by_play2017 {
   measure: count {
     type: count
     drill_fields: []
+    html:
+    {% if value <= 5 %}
+    <p style="color: red; font-size:100%">{{ rendered_value }}</p>
+    {% elsif value > 4 %}
+    <p style="color: green; font-size:100%">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black;  font-size:100%">{{ rendered_value }}</p>
+    {% endif %}
+    ;;
   }
 
   measure: games {
@@ -381,6 +405,30 @@ view: play_by_play2017 {
     type: number
     sql: ${FTM}/nullif(${FTA},0) ;;
     value_format_name: percent_1
+    html:
+    {% if value >= 0.85 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.8 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.75 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.7 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.65 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.6 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.55 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.55 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
   }
 
   measure: l_points {
@@ -401,6 +449,11 @@ view: play_by_play2017 {
   measure: FGM {
     type: sum
     sql: ${field_goal_makes} ;;
+  }
+
+  measure: FG_from_assist {
+    type: sum
+    sql: ${field_goals_from_assists} ;;
   }
 
   measure: running_FGM {
@@ -428,6 +481,30 @@ view: play_by_play2017 {
     type: number
     sql: ${FGM}/nullif(${FGA},0) ;;
     value_format_name: percent_1
+    html:
+    {% if value >= 0.6 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.5 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.45 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.4 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.35 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.3 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.25 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.2 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
   }
 
   measure: 3PFGM {
@@ -451,6 +528,30 @@ view: play_by_play2017 {
     type: number
     sql: ${3PFGM}/nullif(${3PFGA}, 0) ;;
     value_format_name: percent_1
+    html:
+    {% if value >= 0.45 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.4 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.35 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.3 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.25 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.2 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.15 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.1 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
   }
 
   measure: paint_FG {
@@ -471,6 +572,31 @@ view: play_by_play2017 {
   measure: paint_FGP {
     type: number
     sql: ${paint_FG}/nullif(${paint_FGA}, 0) ;;
+    value_format_name: percent_1
+    html:
+    {% if value >= 0.7 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.6 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.55 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.5 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.45 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.4 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.35 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.25 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
   }
 
   measure: mid_range_make {
@@ -491,6 +617,31 @@ view: play_by_play2017 {
   measure: mid_range_percent {
     type: number
     sql: ${mid_range_make}/nullif(${mid_range_attempts}, 0) ;;
+    value_format_name: percent_1
+    html:
+    {% if value >= 0.6 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.5 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.45 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.4 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.35 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.3 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.25 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.2 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
   }
 
 
@@ -505,18 +656,90 @@ view: play_by_play2017 {
     type: number
     sql: ${total_points}/nullif(${games}, 0) ;;
     value_format_name: decimal_1
+    html:
+    {% if value >= 20 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 16 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 12 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 10 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 8 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 5 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 3 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 1 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
   }
 
   measure: APG {
     type: number
     sql: ${assists}/nullif(${games}, 0) ;;
     value_format_name: decimal_1
+    html:
+    {% if value >= 8 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 7 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 6 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 5 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 4 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 3 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 2 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 1 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
   }
 
   measure: RPG {
     type: number
     sql: ${total_rebs}/nullif(${games}, 0) ;;
     value_format_name: decimal_1
+    html:
+    {% if value >= 8 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 7 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 6 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 5 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 4 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 3 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 2 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 1 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
   }
 
   measure: defensinve_RPG {
@@ -535,12 +758,66 @@ view: play_by_play2017 {
     type: number
     sql: ${steals}/nullif(${games}, 0) ;;
     value_format_name: decimal_1
+    html:
+    {% if value >= 2 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 1.5 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 1 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.75 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.5 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.25 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.15 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.1 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
 
   }
 
   measure: BLKPG {
     type: number
     sql: ${blocks}/nullif(${games}, 0) ;;
+    value_format_name: decimal_1
+    html:
+    {% if value >= 1.5 %}
+    <p style="color: black; background-color: seagreen; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 1.25 %}
+    <p style="color: black; background-color: MEDIUMSEAGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 1 %}
+    <p style="color: black; background-color: PALEGREEN; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.75 %}
+    <p style="color: black; background-color: PALEGOLDENROD; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.5 %}
+    <p style="color: black; background-color: LEMONCHIFFON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.25 %}
+    <p style="color: black; background-color: LIGHTSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.15 %}
+    <p style="color: black; background-color: DARKSALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0.1 %}
+    <p style="color: black; background-color: SALMON; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% elsif value >= 0 %}
+    <p style="color: black; background-color: INDIANRED; font-size:120%; text-align:center">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: black; background-color: GHOSTWHITE; font-size:120%; text-align:center">{{ rendered_value }}</p>
+
+    {% endif %}
+    ;;
+  }
+
+  measure: TOPG {
+    type: number
+    sql: ${turnovers}/nullif(${games}, 0) ;;
     value_format_name: decimal_1
   }
 
