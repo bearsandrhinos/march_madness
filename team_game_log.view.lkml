@@ -1072,6 +1072,7 @@ measure: PPG {
   type: average
   sql: ${score} ;;
   value_format_name: decimal_1
+  drill_fields: [game_date, final_score, opposing_team.team_name, assists ]
 
 }
 

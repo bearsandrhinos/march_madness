@@ -379,10 +379,7 @@ view: play_by_play2017 {
     sql: ${made1_free} ;;
   }
 
-  measure: running_FTM {
-    type: running_total
-    sql: ${FTM} ;;
-  }
+#
 
   measure: FT_missed {
     type: sum
